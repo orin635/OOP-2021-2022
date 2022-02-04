@@ -127,6 +127,7 @@ public class BugZap extends PApplet
 			g = 0;
 			b = 0;
 			score = score + 1;
+			downgradeBug();
 		}
 	}
 
@@ -216,6 +217,18 @@ public class BugZap extends PApplet
 	void upgradeBug(){
 		bugWidth = bugWidth + bugGrowSize;
 		bugSpeed = (float) (bugSpeed + bugGrowSpeed);
+	}
+
+	void downgradeBug(){
+		bugWidth = bugWidth - bugGrowSize;
+		bugSpeed = (float) (bugSpeed - bugGrowSpeed);
+		if(bugWidth < 30){
+			bugWidth = 30;
+		}
+
+		if(bugSpeed < 3){
+			bugSpeed = 3;
+		}
 	}
 
     public void keyPressed()
