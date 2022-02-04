@@ -1,7 +1,6 @@
 package ie.tudublin;
 
 import com.jogamp.nativewindow.util.Rectangle;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -10,7 +9,7 @@ public class BugZap extends PApplet
 
     float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b, velX, velY, newLocX, newLocY, bulletSpeed, playerSpeed, bugSpeed, bugGrowSize;
 	double bugGrowSpeed;
-	int shoot, score, newLocation;
+	int shoot, score, newLocation, bugscore;
 	PImage img;
 
 	public void settings()
@@ -42,6 +41,7 @@ public class BugZap extends PApplet
 		b = 255;
 		bugGrowSize = 1;
 		bugGrowSpeed = 0.5;
+		bugscore = 0;
 		img = loadImage("C:/Users/omcdo/OneDrive - Technological University Dublin/OOP2/OOP-2021-2022/java/src/ie/tudublin/cake.png");
 		smooth();
 		
@@ -138,6 +138,13 @@ public class BugZap extends PApplet
 		text(displayText, 50, 50);
 	}
 
+	void displayBugScore(){
+		fill(255,255,255);
+		textSize(20);
+		String displayText = "Bugs Score : " + bugscore;
+		text(displayText, 800, 50);
+	}
+
 	void moveBug(float x, float y){
 		float distX, distY, dist, steps;
 
@@ -215,11 +222,21 @@ public class BugZap extends PApplet
 	}
 
 	void upgradeBug(){
+		bugscore = bugscore + 1;
 		bugWidth = bugWidth + bugGrowSize;
 		bugSpeed = (float) (bugSpeed + bugGrowSpeed);
+
+		if(bugWidth == 40){
+			gameOver();
+		}
 	}
 
 	void downgradeBug(){
+		bugscore = bugscore - 1;
+		if(bugscore < 0){
+
+			bugscore = 0;
+		}
 		bugWidth = bugWidth - bugGrowSize;
 		bugSpeed = (float) (bugSpeed - bugGrowSpeed);
 		if(bugWidth < 30){
@@ -231,6 +248,9 @@ public class BugZap extends PApplet
 		}
 	}
 
+	void gameOver(){
+
+	}
     public void keyPressed()
 	{
 		if (key == 'a')
@@ -263,6 +283,7 @@ public class BugZap extends PApplet
 		checkShoot();
 		collisionCheck();
 		displayScore();
+		displayBugScore();
 
 	}
 }
