@@ -3,16 +3,19 @@ package ie.tudublin;
 import com.jogamp.nativewindow.util.Rectangle;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 public class BugZap extends PApplet
 {
 
-    float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b, velX, velY, newLocX, newLocY, bulletSpeed, playerSpeed, bugSpeed;
+    float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b, velX, velY, newLocX, newLocY, bulletSpeed, playerSpeed, bugSpeed, bugGrowSize;
+	double bugGrowSpeed;
 	int shoot, score, newLocation;
+	PImage img;
 
 	public void settings()
 	{
-		size(750, 750);
+		size(1000, 750);
 	}
 
 	public void setup() {
@@ -37,7 +40,9 @@ public class BugZap extends PApplet
 		r = 255;
 		g = 255;
 		b = 255;
-
+		bugGrowSize = 1;
+		bugGrowSpeed = 0.5;
+		img = loadImage("C:/Users/omcdo/OneDrive - Technological University Dublin/OOP2/OOP-2021-2022/java/src/ie/tudublin/cake.png");
 		smooth();
 		
 	}
@@ -75,7 +80,7 @@ public class BugZap extends PApplet
 		float x2,y2,x3,y3;
 		x2 = x - w;
 		x3 = x + w;
-		y2 = y + 50;
+		y2 = (float) (y + w*1.65);
 		y3 = y2;
 		triangle(x, y, x2, y2, x3, y3);
     }   
@@ -115,7 +120,7 @@ public class BugZap extends PApplet
 	}
 
 	void collisionCheck(){
-		if(bulletX> bugX-30-bulletR/2 && bulletX<bugX+30+bulletR/2 && bulletY<bugY+50 && bulletY>bugY){
+		if(bulletX> bugX-bugWidth-bulletR/2 && bulletX<bugX+bugWidth+bulletR/2 && bulletY<bugY+(bugWidth*1.65) && bulletY>bugY){
 			System.out.println("hit");
 			shoot = 0;
 			newLocation = 1;
@@ -142,7 +147,7 @@ public class BugZap extends PApplet
 			
 			while(dist<180){
 				newLocX = random(0+bugWidth, width-bugWidth);
-				newLocY = random(0+bugWidth, height-200);
+				newLocY = random(0+bugWidth, height-150-bugWidth);
 
 				distX = newLocX - x;
 				distY = newLocY - y;
@@ -166,16 +171,19 @@ public class BugZap extends PApplet
 		else if(newLocation == 0){
 			bugX = bugX + velX;
 			bugY = bugY + velY;
+			float i = bugWidth/2;
 
 			if(bugX > newLocX){
 				if(bugY > newLocY){
-					if((bugX - newLocX)<2 && (bugY - newLocY)<2){
+					if((bugX - newLocX)<i && (bugY - newLocY)<i){
+						upgradeBug();
 						newLocation = 1;
 					}
 				}
 
 				else{
-					if((bugX - newLocX)<2 && (newLocY - bugY)<2){
+					if((bugX - newLocX)<i && (newLocY - bugY)<i){
+						upgradeBug();
 						newLocation = 1;
 					}
 				}
@@ -183,27 +191,31 @@ public class BugZap extends PApplet
 
 			else{
 				if(bugY > newLocY){
-					if((newLocX - bugX)<2 && (bugY - newLocY)<2){
+					if((newLocX - bugX)<i && (bugY - newLocY)<i){
+						upgradeBug();
 						newLocation = 1;
 					}
 				}
 
 				else{
-					if((newLocX) - bugX<2 && (newLocY - bugY)<2){
+					if((newLocX) - bugX<5 && (newLocY - bugY)<5){
+						upgradeBug();
 						newLocation = 1;
 					}
 				}
 			}
-
-			//if((bugX - newLocX)<2 && (bugY - newLocY)<2){
-			//	newLocation = 1;
-			//}
 		}
 
 		fill(255,255,255);
-		circle(newLocX, newLocY+30, 10);
+		//circle(newLocX, newLocY+bugWidth, 10);
+		image(img, newLocX, newLocY, 30, 30);
 
 
+	}
+
+	void upgradeBug(){
+		bugWidth = bugWidth + bugGrowSize;
+		bugSpeed = (float) (bugSpeed + bugGrowSpeed);
 	}
 
     public void keyPressed()
