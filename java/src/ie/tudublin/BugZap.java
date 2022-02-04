@@ -7,8 +7,8 @@ import processing.core.PApplet;
 public class BugZap extends PApplet
 {
 
-    float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b;
-	int shoot, score;
+    float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b, velX, velY, newLocX, newLocY, bulletSpeed, playerSpeed, bugSpeed;
+	int shoot, score, newLocation;
 
 	public void settings()
 	{
@@ -19,7 +19,7 @@ public class BugZap extends PApplet
 		colorMode(RGB);
 		background(0);
         playerX = width/2;
-        playerY = height - 100;
+        playerY = height - 50;
         playerWidth = 100;
 		bugX = width/2;
 		bugY = 100;
@@ -27,9 +27,13 @@ public class BugZap extends PApplet
 		shoot = 0;
 		bulletX = playerX;
 		bulletY = playerY-40;
+		newLocation = 1;
 		bulletR = 12;
 		teleportTime = 60;
 		score = 0;
+		bulletSpeed = 15;
+		playerSpeed = 12;
+		bugSpeed = 3;
 		r = 255;
 		g = 255;
 		b = 255;
@@ -39,9 +43,9 @@ public class BugZap extends PApplet
 	}
 
     void drawPlayer(float x, float y, float w){
-		fill(255, 255, 255);
+		fill(255,255,255);
         strokeWeight(10);
-		stroke(255, 255, 255);
+		stroke(255,255,255);
         line(x,y,x,y-40);
 		strokeWeight(0);
         rectMode(CENTER);
@@ -57,7 +61,17 @@ public class BugZap extends PApplet
 
 	void drawBug(float x, float y, float w){
         strokeWeight(0);
-		fill(255,0,0);
+		if(g<255 || b<255){
+			g = g + 15;
+			b = b + 15;
+			if(g>255){
+				g = 255;
+			}
+			if(b>255){
+				b = 255;
+			}
+		}
+		fill(r,g,b);
 		float x2,y2,x3,y3;
 		x2 = x - w;
 		x3 = x + w;
@@ -74,7 +88,7 @@ public class BugZap extends PApplet
 
 		if(shoot == 1){
 			drawBullet(bulletX, bulletY, bulletR);
-			bulletY = bulletY - 8;
+			bulletY = bulletY - bulletSpeed;
 		}
 
 		if(bulletY<0){
@@ -104,6 +118,9 @@ public class BugZap extends PApplet
 		if(bulletX> bugX-30-bulletR/2 && bulletX<bugX+30+bulletR/2 && bulletY<bugY+50 && bulletY>bugY){
 			System.out.println("hit");
 			shoot = 0;
+			newLocation = 1;
+			g = 0;
+			b = 0;
 			score = score + 1;
 		}
 	}
@@ -115,18 +132,92 @@ public class BugZap extends PApplet
 		text(displayText, 50, 50);
 	}
 
+	void moveBug(float x, float y){
+		float distX, distY, dist, steps;
+
+		if(newLocation == 1){
+			dist = 0;
+			distX = 0;
+			distY = 0;
+			
+			while(dist<180){
+				newLocX = random(0+bugWidth, width-bugWidth);
+				newLocY = random(0+bugWidth, height-200);
+
+				distX = newLocX - x;
+				distY = newLocY - y;
+			
+				dist = (distX * distX) + (distY * distY);
+				dist = (float) Math.sqrt(dist);
+			}
+
+			steps = dist / bugSpeed;
+
+			velX = distX / steps;
+			velY = distY / steps;
+
+			newLocation = 0;
+
+			String print = "NewLocX :" + newLocX + " NewLocY :" + newLocY + " DistX :" + distX + " DistY :" + distY + " dist :" + dist + " velX :" + velX + " velY :" + velY;
+
+			System.out.println(print);
+		}
+
+		else if(newLocation == 0){
+			bugX = bugX + velX;
+			bugY = bugY + velY;
+
+			if(bugX > newLocX){
+				if(bugY > newLocY){
+					if((bugX - newLocX)<2 && (bugY - newLocY)<2){
+						newLocation = 1;
+					}
+				}
+
+				else{
+					if((bugX - newLocX)<2 && (newLocY - bugY)<2){
+						newLocation = 1;
+					}
+				}
+			}
+
+			else{
+				if(bugY > newLocY){
+					if((newLocX - bugX)<2 && (bugY - newLocY)<2){
+						newLocation = 1;
+					}
+				}
+
+				else{
+					if((newLocX) - bugX<2 && (newLocY - bugY)<2){
+						newLocation = 1;
+					}
+				}
+			}
+
+			//if((bugX - newLocX)<2 && (bugY - newLocY)<2){
+			//	newLocation = 1;
+			//}
+		}
+
+		fill(255,255,255);
+		circle(newLocX, newLocY+30, 10);
+
+
+	}
+
     public void keyPressed()
 	{
 		if (key == 'a')
 		{
             if(playerX > 0+(playerWidth/2)){
-                playerX = playerX - 9;
+                playerX = playerX - playerSpeed;
             }
 		}
 		if (key == 'd')
 		{
             if(playerX < width-(playerWidth/2)){
-                playerX = playerX + 9;
+                playerX = playerX + playerSpeed;
             }
 		}
 		if (key == ' ')
@@ -139,10 +230,11 @@ public class BugZap extends PApplet
 
 	public void draw()
 	{
-        background(0);
+        background(18, 23, 41);
 		drawPlayer(playerX, playerY, playerWidth);
 		drawBug(bugX, bugY, bugWidth);
-		teleportBug();
+		moveBug(bugX, bugY);
+		//teleportBug();
 		checkShoot();
 		collisionCheck();
 		displayScore();
