@@ -9,7 +9,7 @@ public class BugZap extends PApplet
 
     float playerX, playerY, playerWidth, bugX, bugY, bugWidth, bulletX,bulletY,bulletR, teleportTime,r,g,b, velX, velY, newLocX, newLocY, bulletSpeed, playerSpeed, bugSpeed, bugGrowSize;
 	double bugGrowSpeed;
-	int shoot, score, newLocation, bugscore;
+	int shoot, score, newLocation, bugscore, start, end;
 	PImage img;
 
 	public void settings()
@@ -42,9 +42,17 @@ public class BugZap extends PApplet
 		bugGrowSize = 1;
 		bugGrowSpeed = 0.5;
 		bugscore = 0;
+		start = 0;
+		end = 0;
 		img = loadImage("C:/Users/omcdo/OneDrive - Technological University Dublin/OOP2/OOP-2021-2022/java/src/ie/tudublin/cake.png");
 		smooth();
 		
+	}
+
+	void startGame(){
+		textSize(30);
+		text("Get 10 points before the bug does!", 300, height/2);
+		text("Press 'SPACE' to start", 380, height/2 + 50);
 	}
 
     void drawPlayer(float x, float y, float w){
@@ -248,26 +256,42 @@ public class BugZap extends PApplet
 		}
 	}
 
-	void gameOver(){
-
+	void checkGameState(){
+		if(score == 10 || bugscore == 10){
+			end = 1;
+		}
 	}
+
+	void gameOver(){
+		textSize(30);
+		text("Game Over!",400, height/2);
+	}
+
     public void keyPressed()
 	{
-		if (key == 'a')
-		{
-            if(playerX > 0+(playerWidth/2)){
-                playerX = playerX - playerSpeed;
-            }
+		if(start == 1){
+			if (key == 'a')
+			{
+				if(playerX > 0+(playerWidth/2)){
+					playerX = playerX - playerSpeed;
+				}
+			}
+			if (key == 'd')
+			{
+				if(playerX < width-(playerWidth/2)){
+					playerX = playerX + playerSpeed;
+				}
+			}
+			if (key == ' ')
+			{
+				shoot = 1;
+			}
 		}
-		if (key == 'd')
-		{
-            if(playerX < width-(playerWidth/2)){
-                playerX = playerX + playerSpeed;
-            }
-		}
-		if (key == ' ')
-		{
-			shoot = 1;
+
+		if(start == 0){
+			if(key == ' '){
+				start = 1;
+			}
 		}
 	}
 
@@ -275,15 +299,25 @@ public class BugZap extends PApplet
 
 	public void draw()
 	{
-        background(18, 23, 41);
-		drawPlayer(playerX, playerY, playerWidth);
-		drawBug(bugX, bugY, bugWidth);
-		moveBug(bugX, bugY);
-		//teleportBug();
-		checkShoot();
-		collisionCheck();
-		displayScore();
-		displayBugScore();
+		background(18, 23, 41);
 
+		if(start == 0){
+			startGame();
+		}
+
+		if(start == 1 && end == 0){
+			drawPlayer(playerX, playerY, playerWidth);
+			drawBug(bugX, bugY, bugWidth);
+			moveBug(bugX, bugY);
+			checkShoot();
+			collisionCheck();
+			displayScore();
+			displayBugScore();
+			checkGameState();
+		}
+
+		if(end == 1){
+			gameOver();
+		}
 	}
 }
