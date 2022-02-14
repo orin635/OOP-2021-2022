@@ -1,6 +1,6 @@
 package ie.tudublin;
 
-import com.jogamp.nativewindow.util.Rectangle;
+//import com.jogamp.nativewindow.util.Rectangle;
 import processing.core.PApplet;
 import processing.core.PImage;
 
