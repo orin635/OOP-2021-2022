@@ -56,7 +56,7 @@ public class Loops extends PApplet
 		{
 			case 0:
 				background(0);
-				int bars = (int) (mouseX / 20.0f);
+				int bars = (int) (mouseX / 10.0f);
 				float w = width / (float)bars;	
 				for(int i = 0 ; i < bars ; i ++)
 				{
@@ -66,7 +66,16 @@ public class Loops extends PApplet
 				}
 				break;
 			case 1:
-			
+				background(0);
+				int squares = (int) (mouseX / 2.0f);
+				float h = width / (float)squares;	
+				for(int i = 0 ; i < squares ; i ++)
+				{
+					noStroke();
+					fill(map(i, 0, squares, 0, 255), 255, 255);
+					rect(map(i, 0, squares, 0, 500),map(i, 0, squares, 0, 500) , h, h);
+				}
+
 				break;
 				//map(a,b,c,d,e);
 				//a = inputvalue
@@ -75,6 +84,40 @@ public class Loops extends PApplet
 
 				// map(-2, 10, 90, 200, 233);
 
+
+				case 2:
+					background(0);
+					// int circle = (int) (mouseX / 2.0f);
+					// int start = height / circle;
+					// int y = (int) map(y,0,start,0,height);
+					// float r = width / (float)circle;	
+					// for(int i = 0 ; i < circle ; i ++)
+					// {
+					// 	noStroke();
+					// 	fill(map(i, 0, circle, 0, 255), 255, 255);
+					// 	circle(map(i, 0, circle, 0+r/2, 500),y,r);
+					// 	//circle(0+r/2,map(i, 0, circle, 0+r/2, 500),r);
+					// }
+					int circle = (int)(mouseX/10.0f);
+					
+					float r = width / (float)circle;
+					for(int j = (int) (0+(r/2)); j < height; j = (int) (j + r)){
+						for(int i = 0 ; i < circle ; i ++)
+						{
+							noStroke();
+							int colour = (int) map(i, circle/j, circle, j, 255); 
+							while(colour > 255){
+								colour = colour - 255;
+							}
+							fill(colour, 255, 255);
+							circle(map(i, 0, circle, 0+r/2, 500),j,r);
+						}
+					}
+
+				
+
+
+				break;
 		}
 	}
 }
