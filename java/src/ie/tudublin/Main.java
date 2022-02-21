@@ -1,5 +1,7 @@
 package ie.tudublin;
 
+//import java.lang.reflect.Array;
+
 public class Main
 {
     public static void helloProcessing()
@@ -19,6 +21,14 @@ public class Main
 		String[] a = {"MAIN"};
         processing.core.PApplet.runSketch( a, new Loops());
     }
+
+
+    public static void Arrays()
+	{
+		String[] a = {"MAIN"};
+        processing.core.PApplet.runSketch( a, new Arrays());
+    }
+
 
     public void cat()
     {
@@ -45,7 +55,7 @@ public class Main
     }
     public static void main(String[] args)
     {
-        loops();
+        Arrays();
 
         // Tara Misty
         // Tara Tara
